@@ -1,0 +1,175 @@
+{include file="control/header" /}
+
+<div class="mdui-container doc-container">
+    <div class="mdui-typo">
+        <h2 class="doc-chapter-title doc-chapter-title-first mdui-text-color-theme">{$page_title}<a class="doc-anchor" id="font"></a></h2>
+    </div>
+</div>
+<br>
+<div class="mdui-container">
+    <div class="mdui-card" style="width:100%;margin:auto;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">
+                <button class="mdui-btn mdui-color-theme mdui-ripple mdui-btn-icon" mdui-dialog="{target: '#canceledit'}"><i class="mdui-icon material-icons">keyboard_arrow_left</i></button>    修改题目
+            </div>
+        </div>
+        <div class="mdui-card-content mdui-valign">
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">landscape</i>
+                <label class="mdui-textfield-label">题目排号</label>
+                <textarea class="mdui-textfield-input" id="seq" name="seq" type="text" pattern="[0-9]+" required>{$seq}</textarea>
+                <div class="mdui-textfield-helper">题目排号由数字组成</div>
+                <div class="mdui-textfield-error">题目排号由数字组成</div>
+            </div>
+            <br>
+            <div class="mdui-valign" style="width:49%;">
+                <div class="mdui-textfield mdui-textfield-floating-label" style="width:89%;">
+                    <i class="mdui-icon material-icons">language</i>
+                    <label class="mdui-textfield-label">使用语言</label>
+                    <textarea class="mdui-textfield-input" id="plang" name="plang" type="text" disabled required>{$plang}</textarea>
+                </div>
+                <button class="mdui-btn mdui-color-theme-accent mdui-left mdui-ripple mdui-btn-raised" mdui-dialog="{target: '#selectlang'}">选择语言</button>
+                <div class="mdui-dialog" id="selectlang">
+                    <div class="mdui-dialog-title">请选择使用语言</div>
+                    <div class="mdui-dialog-content">
+                        <div class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-md-3">
+                            {foreach $contest_lang as $v}
+                            <div class="mdui-col mdui-center">
+                                <label class="mdui-checkbox">
+                                    <input type="checkbox" id="slang" name="slang" value="{$v}"{in name="v" value="$problem_lang"} checked{/in}/>
+                                    <i class="mdui-checkbox-icon"></i>
+                                    {$v}
+                                </label>
+                            </div>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div class="mdui-dialog-actions">
+                        <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="SelectLang()">选择</button>
+                        <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-card-content mdui-valign">
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">timeline</i>
+                <label class="mdui-textfield-label">题目分数</label>
+                <textarea class="mdui-textfield-input" id="problemscore" name="problemscore" type="text" pattern="[0-9]+" required>{$problemscore}</textarea>
+                <div class="mdui-textfield-helper">题目分数由数字组成</div>
+                <div class="mdui-textfield-error">题目分数由数字组成</div>
+            </div>
+            <br>
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">bookmark</i>
+                <label class="mdui-textfield-label">题目序号</label>
+                <textarea class="mdui-textfield-input" id="problemid" name="problemid" type="text" disabled required>{$problemid}</textarea>
+                <div class="mdui-textfield-helper">不可更改</div>
+                <div class="mdui-textfield-error">不可更改</div>
+            </div>
+        </div>
+        <div class="mdui-card-actions mdui-valign">
+            <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-center mdui-btn-raised" mdui-dialog="{target: '#submitedit'}">提交</button>
+            <div class="mdui-dialog" id="canceledit">
+                <div class="mdui-dialog-title">确认返回吗？</div>
+                <div class="mdui-dialog-content">所做的修改不会保存</div>
+                <div class="mdui-dialog-actions">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="pageback()">确定</button>
+                    <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                </div>
+            </div>
+            <div class="mdui-dialog" id="submitedit">
+                <div class="mdui-dialog-title">确认提交吗？</div>
+                <div class="mdui-dialog-content">提交后不可修改</div>
+                <div class="mdui-dialog-actions">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="problemeditapiedit{$problemid}()">提交</button>
+                    <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+    <script>
+        window.onload=function()
+        {
+            getMsg2('{$cid}','problemedit','/{$problemid}');
+        }
+        function MsgFunc(){
+            
+        }
+        function MsgFunc2(){
+            getMsg2('{$cid}','problemedit','/{$problemid}');
+        }
+        function MsgFunc2_(){
+            window.location.assign('/rankupdate/contest{$cid}/admin/problems');
+        }
+        function pageback(){
+            httpGet('/rankupdate/contest{$cid}/admin/problems');
+        }
+        function ModLang(lang=null){
+            var objlang = document.getElementById("plang");
+            objlang.value = lang;
+            mdui.updateTextFields();
+            mdui.mutation();
+        }
+        function SelectLang(){
+            var slang = document.getElementsByName("slang");   
+            var lang="";
+            for(var i=0;i<slang.length;i++){
+                if(slang[i].checked==true){
+                    if(lang.length!=0)lang+=',';
+                    lang+=slang[i].value;
+                }
+            }
+            ModLang(lang);
+        }
+        function problemeditapiedit{$problemid}(){
+            var seq = document.getElementById("seq").value;    
+            var lang = document.getElementById("plang").value;    
+            var problemscore = document.getElementById("problemscore").value;    
+            if(seq.length==0)
+            {
+                mdui.alert("题目排号由数字组成", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            for(var i=0;i<10;i++){
+                if(seq[i]<'0'||seq[i]>'9'){
+                    mdui.alert("题目排号由数字组成", "添加错误", function(){}, {
+                        confirmText: '确认'
+                    });
+                    return false;
+                }
+            }
+            if(lang.length==0)
+            {
+                mdui.alert("请选择使用语言", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(problemscore.length==0)
+            {
+                mdui.alert("题目排号由数字组成", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            for(var i=0;i<10;i++){
+                if(problemscore[i]<'0'||problemscore[i]>'9'){
+                    mdui.alert("题目排号由数字组成", "添加错误", function(){}, {
+                        confirmText: '确认'
+                    });
+                    return false;
+                }
+            }
+            httpPost2('/rankupdate/contest{$cid}/admin/problemeditapiedit/{$problemid}',{'seq':seq,'lang':lang,'problemscore':problemscore});
+        }
+    </script>
+
+
+
+
+{include file="control/tail" /}

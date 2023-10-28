@@ -1,0 +1,112 @@
+{include file="control/header" /}
+
+<div class="mdui-container doc-container">
+    <div class="mdui-typo">
+        <h2 class="doc-chapter-title doc-chapter-title-first mdui-text-color-theme">{$page_title}<a class="doc-anchor" id="font"></a></h2>
+    </div>
+</div>
+<br>
+<div class="mdui-container">
+    <div class="mdui-card" style="width:100%;margin:auto;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">选手得分</div>
+            <div class="mdui-card-primary-subtitle">你可以查看得分和重新计算得分。<br>数据会有五分钟左右的延时。</div>
+        </div>
+        <div class="mdui-card-content">
+            <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-float-right" onclick="scoresapicalc()">
+                <i class="mdui-icon material-icons">refresh</i>
+                重新计算
+            </button>
+            <br>
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                        <tr>
+                            <th>登录名称<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='loginname'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('loginname','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='loginname'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('loginname','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>题目序号<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='problemid'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('problemid','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='problemid'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('problemid','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>单题得分<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='score'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('score','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='score'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('score','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>单题用时<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='scoretime'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('scoretime','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='scoretime'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('scoretime','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>通过状态<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='status'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('status','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='status'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('status','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>是否一血<br>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='firstblood'&&$scores_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('firstblood','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $scores_order_key=='firstblood'&&$scores_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="scoresapiorder('firstblood','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $scores as $v}
+                        <tr id="scorelist" name="scorelist">
+                            <td>{$v['loginname']}</td>
+                            <td>{$v['problemid']}</td>
+                            <td>{$v['score']}</td>
+                            <td>{$v['scoretime']}</td>
+                            <td>{$v['status']}</td>
+                            <td>{if $v['firstblood']==1}是{else/}否{/if}</td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+    <script>
+        window.onload=function()
+        {
+            getMsg('{$cid}','scores');
+        }
+        function MsgFunc(){
+            
+        }
+        function scoresapicalc(){
+            httpPost('/rankupdate/contest{$cid}/admin/scoresapicalc',{});
+        }
+        function scoresapiorder(scores_order_key,scores_order_by){
+            httpPost('/rankupdate/contest{$cid}/admin/scoresapiorder',{'scores_order_key':scores_order_key,'scores_order_by':scores_order_by});
+        }
+    </script>
+
+
+
+
+{include file="control/tail" /}

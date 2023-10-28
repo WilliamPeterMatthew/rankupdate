@@ -1,0 +1,155 @@
+{include file="control/header" /}
+
+<div class="mdui-container doc-container">
+    <div class="mdui-typo">
+        <h2 class="doc-chapter-title doc-chapter-title-first mdui-text-color-theme">{$page_title}<a class="doc-anchor" id="font"></a></h2>
+    </div>
+</div>
+<br>
+<div class="mdui-container">
+    <div class="mdui-card" style="width:100%;margin:auto;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">
+                <button class="mdui-btn mdui-color-theme mdui-ripple mdui-btn-icon" mdui-dialog="{target: '#canceladd'}"><i class="mdui-icon material-icons">keyboard_arrow_left</i></button>    添加记录
+            </div>
+        </div>
+        <div class="mdui-card-content mdui-valign">
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">bookmark_border</i>
+                <label class="mdui-textfield-label">记录序号</label>
+                <textarea class="mdui-textfield-input" id="data_rid" name="data_rid" type="text" required></textarea>
+                <div class="mdui-textfield-helper">记录序号不能与现有记录重复</div>
+            </div>
+            <br>
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">book</i>
+                <label class="mdui-textfield-label">通过状态</label>
+                <textarea class="mdui-textfield-input" id="status" name="status" type="text" required></textarea>
+            </div>
+        </div>
+        <div class="mdui-card-content mdui-valign">
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">linear_scale</i>
+                <label class="mdui-textfield-label">记录分数</label>
+                <textarea class="mdui-textfield-input" id="dscore" name="dscore" type="text" pattern="[0-9]+" required></textarea>
+                <div class="mdui-textfield-helper">记录分数由数字组成</div>
+                <div class="mdui-textfield-error">记录分数由数字组成</div>
+            </div>
+            <br>
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">bookmark</i>
+                <label class="mdui-textfield-label">题目序号</label>
+                <textarea class="mdui-textfield-input" id="problemid" name="problemid" type="text" required></textarea>
+            </div>
+        </div>
+        <div class="mdui-card-content mdui-valign">
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">face</i>
+                <label class="mdui-textfield-label">登录名称</label>
+                <textarea class="mdui-textfield-input" id="loginname" name="loginname" type="text" required></textarea>
+            </div>
+            <br>
+            <div class="mdui-textfield mdui-textfield-floating-label" style="width:49%;margin:auto;">
+                <i class="mdui-icon material-icons">timelapse</i>
+                <label class="mdui-textfield-label">提交时间</label>
+                <textarea class="mdui-textfield-input" id="sendtime" name="sendtime" type="text" pattern="[0-9]+" required></textarea>
+                <div class="mdui-textfield-helper">提交时间由数字组成</div>
+                <div class="mdui-textfield-error">提交时间由数字组成</div>
+            </div>
+        </div>
+        <div class="mdui-card-actions mdui-valign">
+            <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-center mdui-btn-raised" mdui-dialog="{target: '#submitadd'}">提交</button>
+            <div class="mdui-dialog" id="canceladd">
+                <div class="mdui-dialog-title">确认返回吗？</div>
+                <div class="mdui-dialog-content">所做的修改不会保存</div>
+                <div class="mdui-dialog-actions">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="pageback()">确定</button>
+                    <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                </div>
+            </div>
+            <div class="mdui-dialog" id="submitadd">
+                <div class="mdui-dialog-title">确认提交吗？</div>
+                <div class="mdui-dialog-content">提交后不可修改</div>
+                <div class="mdui-dialog-actions">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="recordaddapiadd()">提交</button>
+                    <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+    <script>
+        window.onload=function()
+        {
+            getMsg('{$cid}','recordadd');
+        }
+        function MsgFunc(){
+            
+        }
+        function MsgFunc2(){
+            getMsg('{$cid}','recordadd');
+        }
+        function MsgFunc2_(){
+            window.location.assign('/rankupdate/contest{$cid}/admin/records');
+        }
+        function pageback(){
+            httpGet('/rankupdate/contest{$cid}/admin/records');
+        }
+        function recordaddapiadd(){
+            var data_rid = document.getElementById("data_rid").value;    
+            var status = document.getElementById("status").value;    
+            var dscore = document.getElementById("dscore").value;    
+            var problemid = document.getElementById("problemid").value;    
+            var loginname = document.getElementById("loginname").value;    
+            var sendtime = document.getElementById("sendtime").value;    
+            if(data_rid.length==0)
+            {
+                mdui.alert("请输入记录序号，且不能与现有记录重复", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(status.length==0)
+            {
+                mdui.alert("请输入通过状态", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(dscore.length==0)
+            {
+                mdui.alert("请输入记录分数", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(problemid.length==0)
+            {
+                mdui.alert("请输入题目序号", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(loginname.length==0)
+            {
+                mdui.alert("请输入登录名称", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            if(sendtime.length==0)
+            {
+                mdui.alert("请输入提交时间", "添加错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            httpPost2('/rankupdate/contest{$cid}/admin/recordaddapiadd',{'data_rid':data_rid,'status':status,'dscore':dscore,'problemid':problemid,'loginname':loginname,'sendtime':sendtime});
+        }
+    </script>
+
+
+
+
+{include file="control/tail" /}

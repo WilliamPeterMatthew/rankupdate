@@ -1,0 +1,13 @@
+    location /rankupdate{
+      rewrite ^/rankupdate(.*)$ /rankupdate/public/$1 last;
+    }
+    location /rankupdate/public{
+      index index.php index.html index.htm default.php default.htm default.html;
+      #PHP-INFO-START  PHP引用配置，可以注释或修改
+      include enable-php-74.conf;
+      #PHP-INFO-END
+      
+    	if (!-e $request_filename){
+    		rewrite ^/rankupdate/public/(.*)$ /rankupdate/public/index.php?s=$1  last;   break;
+    	}
+    }

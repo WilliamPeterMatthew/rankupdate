@@ -1,0 +1,98 @@
+{include file="show/header" /}
+
+<div class="mdui-container doc-container">
+    <div class="mdui-typo">
+        <h2 class="doc-chapter-title doc-chapter-title-first mdui-text-color-theme">{$page_title}<a class="doc-anchor" id="font"></a></h2>
+    </div>
+</div>
+<br>
+<div class="mdui-container">
+    <div class="mdui-card" style="width:100%;margin:auto;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">选手排名</div>
+            <div class="mdui-card-primary-subtitle">数据会有五分钟左右的延时。</div>
+        </div>
+        <div class="mdui-card-content">
+            <div class="mdui-valign">
+                <div class="mdui-valign" style="width:49%;">
+                    <div class="mdui-textfield mdui-textfield-floating-label"  style="width:99%;">
+                        <label class="mdui-textfield-label">请输入登录名称</label>
+                        <textarea class="mdui-textfield-input" id="searchloginname" name="searchloginname" type="text"></textarea>
+                    </div>
+                    <button class="mdui-textfield-icon mdui-btn mdui-btn-icon" onclick="searchloginname()">
+                        <i class="mdui-icon material-icons">search</i>
+                    </button>
+                    <button class="mdui-textfield-icon mdui-btn mdui-btn-icon" onclick="document.getElementById('searchloginname').value=''">
+                        <i class="mdui-icon material-icons">close</i>
+                    </button>
+                </div>
+                <div class="mdui-valign mdui-center" style="width:24%;">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-float-right" onclick="manureloadpage()">
+                        <i class="mdui-icon material-icons">timer</i>
+                        切换
+                    </button>
+                    每分钟自动刷新：开启
+                </div>
+                <div class="mdui-center" style="width:24%;">
+                    <button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-float-right" onclick="window.location.reload()">
+                        <i class="mdui-icon material-icons">refresh</i>
+                        刷新页面
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                        <tr>
+                            <th>选手排名</th>
+                            <th>登录名称</th>
+                            <th>选手总分</th>
+                            <th>选手总用时</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mdui-table-row-selected" id="player" name="player">
+                            <td>未搜索</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        {foreach $ranks as $v}
+                        <tr id="ranklist" name="ranklist">
+                            <td>{$v['rank']}</td>
+                            <td>{$v['loginname']}</td>
+                            <td>{$v['pscore']}</td>
+                            <td>{$v['ptime']}</td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+    <script>
+        function searchloginname()
+        {
+            var searchloginname = document.getElementById("searchloginname").value;    
+            window.location.assign("/rankupdate/contest{$cid}/showauto/"+searchloginname);
+        }
+        function manureloadpage()
+        {
+            window.location.assign("/rankupdate/contest{$cid}/show");
+        }
+        window.onload=function()
+        {
+            setTimeout(function()
+            {
+                window.location.reload();
+            },60000);
+        }
+    </script>
+
+
+
+
+{include file="show/tail" /}

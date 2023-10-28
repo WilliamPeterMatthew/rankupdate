@@ -1,0 +1,149 @@
+{include file="control/header" /}
+
+<div class="mdui-container doc-container">
+    <div class="mdui-typo">
+        <h2 class="doc-chapter-title doc-chapter-title-first mdui-text-color-theme">{$page_title}<a class="doc-anchor" id="font"></a></h2>
+    </div>
+</div>
+<br>
+<div class="mdui-container">
+    <div class="mdui-card" style="width:100%;margin:auto;">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-primary-title">题目列表</div>
+            <div class="mdui-card-primary-subtitle">你可以查看、新增或修改题目和题目的信息。</div>
+        </div>
+        <div class="mdui-card-content">
+            <div class="mdui-table-fluid">
+                <table class="mdui-table mdui-table-hoverable mdui-table-selectable">
+                    <thead>
+                        <tr>
+                            <th>操作<br>
+                                <button class="mdui-btn mdui-btn-icon mdui-color-theme-accent mdui-ripple" mdui-dialog="{target: '#submitdel'}">
+                                    <i class="mdui-icon material-icons">delete_sweep</i>
+                                </button>
+                                <div class="mdui-dialog" id="submitdel">
+                                    <div class="mdui-dialog-title">确认删除吗？</div>
+                                    <div class="mdui-dialog-content">删除后不可恢复</div>
+                                    <div class="mdui-dialog-actions">
+                                        <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="multidel()">删除</button>
+                                        <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                                    </div>
+                                </div>
+                                <button class="mdui-btn mdui-btn-icon mdui-color-theme-accent mdui-ripple" onclick="problemadd()">
+                                    <i class="mdui-icon material-icons">add</i>
+                                </button>
+                            </th>
+                            <th>题目排号<br>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='seq'&&$problems_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('seq','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='seq'&&$problems_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('seq','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>题目语言<br>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='lang'&&$problems_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('lang','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='lang'&&$problems_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('lang','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>题目分数<br>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='problemscore'&&$problems_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('problemscore','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='problemscore'&&$problems_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('problemscore','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                            <th>题目序号<br>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='problemid'&&$problems_order_by=='asc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('problemid','asc')">
+                                    <i class="mdui-icon material-icons">expand_less</i>
+                                </button>
+                                <button class="mdui-btn mdui-btn-icon{if $problems_order_key=='problemid'&&$problems_order_by=='desc'} mdui-color-theme-accent{/if} mdui-ripple" onclick="problemsapiorder('problemid','desc')">
+                                    <i class="mdui-icon material-icons">expand_more</i>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $problems as $v}
+                        <tr id="problemlist" name="problemlist" problemid="{$v['problemid']}">
+                            <td class="mdui-valign">
+                                <button class="mdui-btn mdui-btn-icon mdui-ripple" mdui-dialog="{target: '#submitdel{$v['problemid']}'}">
+                                    <i class="mdui-icon material-icons">delete</i>
+                                </button>
+                                <div class="mdui-dialog" id="submitdel{$v['problemid']}">
+                                    <div class="mdui-dialog-title">确认删除吗？</div>
+                                    <div class="mdui-dialog-content">删除后不可恢复</div>
+                                    <div class="mdui-dialog-actions">
+                                        <button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-dialog-confirm onclick="singledel('{$v['problemid']}')">删除</button>
+                                        <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+                                    </div>
+                                </div>
+                                <button class="mdui-btn mdui-btn-icon mdui-ripple" onclick="problemedit('{$v['problemid']}')">
+                                    <i class="mdui-icon material-icons">edit</i>
+                                </button>
+                            </td>
+                            <td>{$v['seq']}</td>
+                            <td>{$v['lang']}</td>
+                            <td>{$v['problemscore']}</td>
+                            <td>{$v['problemid']}</td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+</div>
+    <script>
+        window.onload=function()
+        {
+            getMsg('{$cid}','problems');
+        }
+        function MsgFunc(){
+            
+        }
+        function singledel(problemid){
+            var dellist=problemid;
+            problemsapidel(dellist);
+        }
+        function multidel(){
+            var dellist='';
+            var problemlist = document.getElementsByName("problemlist");   
+            for(var i=0;i<problemlist.length;i++){
+                if(problemlist[i].className=="mdui-table-row-selected"){
+                    if(dellist.length!=1)dellist+=',';
+                    dellist+=problemlist[i].getAttribute('problemid');
+                }
+            }
+            dellist+='';
+            if(dellist.length==2){
+                mdui.alert("未选中任何行", "删除错误", function(){}, {
+                    confirmText: '确认'
+                });
+                return false;
+            }
+            problemsapidel(dellist);
+        }
+        function problemsapidel(dellist){
+            httpPost('/rankupdate/contest{$cid}/admin/problemsapidel',{'dellist':dellist});
+        }
+        function problemsapiorder(problems_order_key,problems_order_by){
+            httpPost('/rankupdate/contest{$cid}/admin/problemsapiorder',{'problems_order_key':problems_order_key,'problems_order_by':problems_order_by});
+        }
+        function problemadd(){
+            window.location.assign('/rankupdate/contest{$cid}/admin/problemadd');
+        }
+        function problemedit(problemid){
+            window.location.assign('/rankupdate/contest{$cid}/admin/problemedit'+problemid);
+        }
+    </script>
+
+
+
+
+{include file="control/tail" /}
